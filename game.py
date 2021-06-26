@@ -7,7 +7,7 @@ import pygame as pg
 from pygame import Rect
 from pygame.locals import *
 
-LEVEL_FILE = 'level2.txt'
+LEVEL_FILE = 'level.txt'
 WIDTH = 1280
 HEIGHT = 640
 BG_COLOUR = 'white'
