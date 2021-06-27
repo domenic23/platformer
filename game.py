@@ -26,9 +26,9 @@ COLOUR_TO_TYPE = {
     (0, 255, 255): '7',
 }
 
-REUSABLE_IMGS = {
-    'fireball': pg.image.load('fireball.png')
-}
+# REUSABLE_IMGS = {
+#     'fireball': pg.image.load('fireball.png')
+# }
 
 
 def layout_from_png(png_path):
@@ -146,8 +146,9 @@ class Sprite:
 
     def throw_fireball(self):
         if not self.fireball_cooldown:
-            self.fireball_cooldown = 5
-            return Fireball(self.hb.right, self.hb.centery, self.facing)
+            self.fireball_cooldown = 10
+            fireball_side = self.hb.left if self.facing == 'L' else self.hb.right
+            return Fireball(fireball_side, self.hb.top-5, self.facing)
 
     def update_state(self):
         previous_state = self.state
@@ -229,21 +230,22 @@ class Block(Rect):
 
 
 class Fireball(Sprite):
-    speed = 10
-    img = REUSABLE_IMGS['fireball']
-    img.set_colorkey(COLOUR_KEY)
-    width, height = img.get_size()
-    animation = Animation_Frames([img], [1])
+    speed = 5
+    # img = REUSABLE_IMGS['fireball']
+    # img.set_colorkey(COLOUR_KEY)
+    width, height = 32, 16
+    animation = Animation_Frames.from_folder('fireball')
+    animation.set_shared_duration(4)
 
     def __init__(self, left, top, facing='R'):
         super().__init__(left, top, self.width, self.height)
         self.register_animation('idle', self.animation)
         self.facing = facing
-        self.duration = 10
+        self.duration = 16
 
     def update(self, surface, obstacles):
         self.erase(surface)
-
+        self.animation.advance()
 
         if self.facing == 'R':
             self.hb.move(self.speed, 0, obstacles)
@@ -257,7 +259,8 @@ class Fireball(Sprite):
         if not self.duration:
             self.erase(surface)
 
-
+        print(self.animation.current_frame_idx)
+        
 
 
 class Walker(Sprite):
@@ -365,7 +368,7 @@ for block in blocks:
 for star in stars:
     star.draw(scaled)
 
-hero = Sprite.from_folder(20, 290, 'hero')
+hero = Sprite.from_folder(20, 290, 'Alph')
 for animation_frames in hero.animations.values():
     animation_frames.set_shared_duration(10)
 
